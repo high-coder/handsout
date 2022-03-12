@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:handsout/provider/currentState.dart';
 import 'package:handsout/student/our_home_page_main_user.dart';
+import 'package:handsout/student/postPage.dart';
 import 'package:handsout/student/verification/verification_failed.dart';
 import 'package:handsout/student/verification/verification_in_process.dart';
-
-
+import 'package:handsout/teacher/homeScreen/our_home_page_teacher.dart';
 import 'package:provider/provider.dart';
-
-
 import 'commonScreens/chooseScreen/our_choose_screen.dart';
 import 'commonScreens/loginScreen/our_login_screen.dart';
 import 'commonScreens/signupScreen/our_signup_screen.dart';
@@ -32,6 +30,7 @@ class _OurSplashScreenState extends State<OurSplashScreen> {
     String where = await _instance.onStartUp();
 
     print(where);
+    //return Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => AddPost()), (route) => false);
 
     if(where == "signup") {
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurLoginPage()), (route) => false);
@@ -45,9 +44,10 @@ class _OurSplashScreenState extends State<OurSplashScreen> {
 
     else if(where == "student") {
       //Navigator.of(context).push(MaterialPageRoute(builder: (context) => OurHomePage()));
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomePageMainUser()), (route) => false);
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomeTeacher()), (route) => false);
     } else if(where == "teacher") {
-      //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomeTeacher()), (route) => false);
+      //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomePageMainUser()), (route) => false);
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomePageMainUser()), (route) => false);
     } else if(where == "admin") {
      // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomeAdmin()), (route) => false);
     }

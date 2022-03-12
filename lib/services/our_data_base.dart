@@ -67,21 +67,23 @@ class OurDatabase {
   Future<String> submitPost(PostModel post) async {
     String retVal = "error";
     try {
-      //String ?downloadUrl;
-      File file = File("sfhksdjf");
+
+      File fileToUpload = File(post.file?.path ?? "");
       if (post.file != null) {
         var random = new Random();
         int number = random.nextInt(
             100000000); // to get a random number for adding as the name to the file
-        post.location = "${post.uid}/$number";
+        post.location = "${post.posterUid}/$number";
         var snapshot = await FirebaseStorage.instance
             .ref(post.location)
-            .putFile(post.file ?? file);
+            .putFile(fileToUpload);
         post.downloadLink = await snapshot.ref.getDownloadURL();
       }
       final snap = await _firestore.collection("posts").doc();
+      post.postDocUid = snap.id;
+
       await snap.set(post.toJson());
-      await _firestore.collection("users").doc(post.uid).update({
+      await _firestore.collection("users").doc(post.posterUid).update({
         "activePosts": FieldValue.arrayUnion([snap.id])
       }).then((value) {
         print("everything is in order now");
@@ -96,33 +98,33 @@ class OurDatabase {
 
   Future<String> submitInterest(PostModel post, String uid) async {
     String retVal = "error";
-    try {
-      await _firestore.collection("posts").doc(post.docUid).update({
-        "interested": FieldValue.arrayUnion([
-          {
-            "uid": uid,
-            "approved": "apply",
-          }
-        ])
-      });
-
-      print("reached here mate");
-
-      await _firestore.collection("users").doc(uid).update({
-        "interested": FieldValue.arrayUnion([post.docUid])
-      });
-
-      // now this below list might have duplicate data to remove it add an optional if statement here and also check for the duplicate data
-      // in the admin function
-      if (post.interested == null) {
-        await _firestore.collection("notifications").doc("thisisthat").update({
-          "posts": FieldValue.arrayUnion([post.docUid])
-        });
-      }
-      retVal = "success";
-    } catch (e) {
-      retVal = "something went wrong";
-    }
+    // try {
+    //   await _firestore.collection("posts").doc(post.postDocUid).update({
+    //     "interested": FieldValue.arrayUnion([
+    //       {
+    //         "uid": uid,
+    //         "approved": "apply",
+    //       }
+    //     ])
+    //   });
+    //
+    //   print("reached here mate");
+    //
+    //   await _firestore.collection("users").doc(uid).update({
+    //     "interested": FieldValue.arrayUnion([post.docUid])
+    //   });
+    //
+    //   // now this below list might have duplicate data to remove it add an optional if statement here and also check for the duplicate data
+    //   // in the admin function
+    //   if (post.interested == null) {
+    //     await _firestore.collection("notifications").doc("thisisthat").update({
+    //       "posts": FieldValue.arrayUnion([post.docUid])
+    //     });
+    //   }
+    //   retVal = "success";
+    // } catch (e) {
+    //   retVal = "something went wrong";
+    // }
 
     return retVal;
   }
@@ -191,21 +193,21 @@ class OurDatabase {
   /// ------------- Start of the admim functions here ======================///
   Future<List<OurUser>> fetchUser(PostModel post) async {
     List<OurUser> users = [];
-    try {
-      List<InterestModel> filtered = [];
-      post.interested?.forEach((element) {
-        if(element.approved == "disapprove") {
-
-        } else {
-          filtered.add(element);
-        }
-      });
-      await Future.forEach<InterestModel>(filtered,
-          (element) async {
-        var data = await _firestore.collection("users").doc(element.uid).get();
-        users.add(OurUser.fromJson(data.data() ?? {}));
-      });
-    } catch (e) {}
+    // try {
+    //   List<InterestModel> filtered = [];
+    //   post.interested?.forEach((element) {
+    //     if(element.approved == "disapprove") {
+    //
+    //     } else {
+    //       filtered.add(element);
+    //     }
+    //   });
+    //   await Future.forEach<InterestModel>(filtered,
+    //       (element) async {
+    //     var data = await _firestore.collection("users").doc(element.uid).get();
+    //     users.add(OurUser.fromJson(data.data() ?? {}));
+    //   });
+    // } catch (e) {}
 
     return users;
   }
@@ -313,99 +315,99 @@ class OurDatabase {
       {required String decision, required String postUid, required String userId, required PostModel postModel}) async {
     String retVal = "error";
 
-    try {
-      if (decision == "approve")  {
-        await _firestore.collection("posts").doc(postUid).update({"stage": 2});
-
-
-        await _firestore
-            .collection("posts")
-            .doc(postUid)
-            .update({
-          "interested":FieldValue.arrayRemove([{
-            "approved":"apply",
-            "uid":userId,
-          }]),
-        });
-        _firestore
-            .collection("posts")
-            .doc(postUid)
-            .update({
-          "interested":FieldValue.arrayUnion([
-            {
-              "approved":decision,
-              "uid":userId,
-            }
-          ]),
-        });
-        _firestore.collection("users").doc(userId).update({
-          "active": FieldValue.arrayUnion([postUid])
-        });
-        _firestore.collection("users").doc(userId).update({
-          "interested": FieldValue.arrayRemove([postUid])
-        });
-        var data = await _firestore.collection("posts").doc(postUid).get();
-        var data2 =  _firestore.collection("posts").doc(postUid).delete();
-        if(decision == "approve") {
-          await _firestore.collection("approvedPosts").doc(postUid).set(data.data() ?? {});
-          await _firestore.collection("notifications").doc("thisisthat").update({
-            "posts":FieldValue.arrayRemove([postUid])
-          });
-
-          //TODO : Create a chat module between the user and the teacher
-
-          var sna = await _firestore.collection("users").doc(postModel.uid).get();
-          OurUser poster = OurUser.fromJson(sna.data() ?? {});
-
-
-          var snaf = await _firestore.collection("users").doc(userId).get();
-          OurUser teacher = OurUser.fromJson(snaf.data() ?? {});
-          // UId of poster, post and the teacher
-          await checkChat(poster,postModel.docUid ?? "", teacher);
-        } else {
-          //await _firestore.collection("disapprovedPosts").doc(postUid).set(data.data() ?? {});
-        }
-
-
-        retVal = "approve";
-      }
-      else {
-       // await _firestore.collection("posts").doc(postUid).update({"stage": 10});
-
-        await _firestore
-            .collection("posts")
-            .doc(postUid)
-            .update({
-          "interested":FieldValue.arrayRemove([{
-            "approved":"apply",
-            "uid":userId,
-          }]),
-        });
-        await _firestore
-            .collection("posts")
-            .doc(postUid)
-            .update({
-          "interested":FieldValue.arrayUnion([
-            {
-              "approved":decision,
-              "uid":userId,
-            }
-          ]),
-        });
-        _firestore.collection("users").doc(userId).update({
-          "interested": FieldValue.arrayRemove([postUid])
-        });
-        await _firestore.collection("users").doc(userId).update({
-          "archived": FieldValue.arrayRemove([postUid])
-        });
-        retVal = "dis";
-
-      }
-
-
-    } catch (E) {
-      retVal = "something went wrong";
-    }
+    // try {
+    //   if (decision == "approve")  {
+    //     await _firestore.collection("posts").doc(postUid).update({"stage": 2});
+    //
+    //
+    //     await _firestore
+    //         .collection("posts")
+    //         .doc(postUid)
+    //         .update({
+    //       "interested":FieldValue.arrayRemove([{
+    //         "approved":"apply",
+    //         "uid":userId,
+    //       }]),
+    //     });
+    //     _firestore
+    //         .collection("posts")
+    //         .doc(postUid)
+    //         .update({
+    //       "interested":FieldValue.arrayUnion([
+    //         {
+    //           "approved":decision,
+    //           "uid":userId,
+    //         }
+    //       ]),
+    //     });
+    //     _firestore.collection("users").doc(userId).update({
+    //       "active": FieldValue.arrayUnion([postUid])
+    //     });
+    //     _firestore.collection("users").doc(userId).update({
+    //       "interested": FieldValue.arrayRemove([postUid])
+    //     });
+    //     var data = await _firestore.collection("posts").doc(postUid).get();
+    //     var data2 =  _firestore.collection("posts").doc(postUid).delete();
+    //     if(decision == "approve") {
+    //       await _firestore.collection("approvedPosts").doc(postUid).set(data.data() ?? {});
+    //       await _firestore.collection("notifications").doc("thisisthat").update({
+    //         "posts":FieldValue.arrayRemove([postUid])
+    //       });
+    //
+    //       //TODO : Create a chat module between the user and the teacher
+    //
+    //       var sna = await _firestore.collection("users").doc(postModel.uid).get();
+    //       OurUser poster = OurUser.fromJson(sna.data() ?? {});
+    //
+    //
+    //       var snaf = await _firestore.collection("users").doc(userId).get();
+    //       OurUser teacher = OurUser.fromJson(snaf.data() ?? {});
+    //       // UId of poster, post and the teacher
+    //       await checkChat(poster,postModel.docUid ?? "", teacher);
+    //     } else {
+    //       //await _firestore.collection("disapprovedPosts").doc(postUid).set(data.data() ?? {});
+    //     }
+    //
+    //
+    //     retVal = "approve";
+    //   }
+    //   else {
+    //    // await _firestore.collection("posts").doc(postUid).update({"stage": 10});
+    //
+    //     await _firestore
+    //         .collection("posts")
+    //         .doc(postUid)
+    //         .update({
+    //       "interested":FieldValue.arrayRemove([{
+    //         "approved":"apply",
+    //         "uid":userId,
+    //       }]),
+    //     });
+    //     await _firestore
+    //         .collection("posts")
+    //         .doc(postUid)
+    //         .update({
+    //       "interested":FieldValue.arrayUnion([
+    //         {
+    //           "approved":decision,
+    //           "uid":userId,
+    //         }
+    //       ]),
+    //     });
+    //     _firestore.collection("users").doc(userId).update({
+    //       "interested": FieldValue.arrayRemove([postUid])
+    //     });
+    //     await _firestore.collection("users").doc(userId).update({
+    //       "archived": FieldValue.arrayRemove([postUid])
+    //     });
+    //     retVal = "dis";
+    //
+    //   }
+    //
+    //
+    // } catch (E) {
+    //   retVal = "something went wrong";
+    // }
     return retVal;
   }
 

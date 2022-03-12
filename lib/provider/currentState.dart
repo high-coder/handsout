@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:image_picker/image_picker.dart';
 
 import '../models/chatModel.dart';
 import '../models/chatsTileModel.dart';
@@ -22,7 +23,7 @@ class CurrentState extends ChangeNotifier {
   OurUser currentUser = OurUser();
   late Box userBox;
   late Size size;
-
+  ImagePicker imgPicker = ImagePicker();
   /// this will be called everytime and will be used to navigate to the pages of the screen
   Future<String> onStartUp() async {
     //await _auth.signOut();
@@ -89,6 +90,29 @@ class CurrentState extends ChangeNotifier {
 
     return where;
   }
+
+
+  XFile ?image;
+
+  pickImageFromGallery() async{
+    image = await imgPicker.pickImage(source: ImageSource.gallery);
+    if(image!=null) {
+      notifyListeners();
+    }
+  }
+
+  pickImageFromCamera() async{
+    image = await imgPicker.pickImage(source: ImageSource.camera);
+    if(image!=null) {
+      notifyListeners();
+    }
+  }
+
+  removeImage() async{
+    image = null;
+    notifyListeners();
+  }
+
 
   Future<String> loginUserWithGoogle() async {
     String retVal = "error";
@@ -353,10 +377,10 @@ class CurrentState extends ChangeNotifier {
         // removing the document that was already in the list and inserting it at the same index as before
         postIds.removeWhere((element2)
         {
-          if(element2.docUid == element.doc.id) {
+          if(element2.postDocUid == element.doc.id) {
             index = postIds.indexOf(element2);
           }
-          return element2.docUid == element.doc.id;
+          return element2.postDocUid == element.doc.id;
         });
 
         // now adding this again
@@ -389,7 +413,7 @@ class CurrentState extends ChangeNotifier {
     retVal = await OurDatabase().submitInterest(postInstance!, currentUser.uid ?? "");
     await Future.delayed(Duration(seconds: 2));
     if(retVal == "success") {
-      postInstance?.applied = "apply";
+      //postInstance?.applied = "apply";
     }
     disableScreen = false;
     notifyListeners();
@@ -532,10 +556,10 @@ class CurrentState extends ChangeNotifier {
   late String chatDoc;
   Future<String> createOrCheckChat(OurUser selectedUid) async {
 
-    chatDoc = "thisisthat-${postInstance?.docUid}-${selectedUid.uid}";
+    //chatDoc = "thisisthat-${postInstance?.docUid}-${selectedUid.uid}";
     String retVal = "error";
 
-    bool exists = await OurDatabase().checkChat(currentUser,postInstance?.docUid ?? "",selectedUid);
+    bool exists = await OurDatabase().checkChat(currentUser,postInstance?.postDocUid ?? "",selectedUid);
     print(exists);
     return retVal;
   }
@@ -587,8 +611,8 @@ class CurrentState extends ChangeNotifier {
     chatRoomsIds = await OurDatabase().getChatRoomsIds(currentUser.uid ?? "");
     print(chatRoomsIds);
     chatRoomsIds.forEach((element) {
-      String toSearch = "${currentUser.uid}-${postInstance?.docUid}-";
-      String toSearch2 = "-${postInstance?.docUid}-${currentUser.uid}";
+      String toSearch = "${currentUser.uid}-${postInstance?.postDocUid}-";
+      String toSearch2 = "-${postInstance?.postDocUid}-${currentUser.uid}";
 
       print("To Search ------- ${toSearch}");
       print("To Search ------- ${toSearch2}");
@@ -612,14 +636,14 @@ class CurrentState extends ChangeNotifier {
   approveDis(String decision, OurUser model,int index) async{
     disableScreen = true;
     notifyListeners();
-    String retVal = await OurDatabase().approveOrDisapproveTeacherMessage(decision: decision, postUid: postInstance?.docUid ?? "", userId: model.uid ?? "",postModel: postInstance!);
+    //String retVal = await OurDatabase().approveOrDisapproveTeacherMessage(decision: decision, postUid: postInstance?.docUid ?? "", userId: model.uid ?? "",postModel: postInstance!);
 
-    if(retVal == "dis") {
-      interestedUser.remove(interestedUser[index]);
-    } else {
-
-    }
-    disableScreen = false;
+    // if(retVal == "dis") {
+    //   interestedUser.remove(interestedUser[index]);
+    // } else {
+    //
+    // }
+    // disableScreen = false;
     notifyListeners();
 
   }
