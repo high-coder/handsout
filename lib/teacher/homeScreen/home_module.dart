@@ -20,13 +20,40 @@ class HomeModule extends StatefulWidget {
 
 class _HomeModuleState extends State<HomeModule> {
 
+
+  TextEditingController _donationAmount = TextEditingController();
   @override
   void initState() {
     CurrentState _instance = Provider.of<CurrentState>(context, listen: false);
     _instance.fetchPost().listen((event) {
       print(event);
     });
+    _instance.initCodePayment();
     super.initState();
+  }
+
+  Widget alert(BuildContext context) {
+    print(
+      'dfjdsf'
+    );
+    return SimpleDialog(
+      title:const Text('Enter the Amount'),
+      children: <Widget>[
+        SimpleDialogOption(
+            onPressed: () { },
+            child:TextFormField(
+
+            )
+
+        ),
+        SimpleDialogOption(
+          onPressed: () { },
+          child:Container(
+            child: Text("Send"),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -170,7 +197,31 @@ class _HomeModuleState extends State<HomeModule> {
 
                               GestureDetector(
                                 onTap: () {
+                                  _instance.selectedRightNow = _instance.postIds[index];
+                                  showDialog(context: context, builder: (BuildContext context){
+                                    return SimpleDialog(
+                                      title:const Text('Enter the Amount'),
+                                      children: <Widget>[
+                                        SimpleDialogOption(
+                                            onPressed: () { },
+                                            child:TextFormField(
+                                              controller: _donationAmount,
 
+                                            )
+
+                                        ),
+                                        SimpleDialogOption(
+                                          onPressed: () {
+                                            print(_donationAmount.text);
+                                            _instance.openCheckout(int.parse(_donationAmount.text), context);
+                                          },
+                                          child:Container(
+                                            child: Text("Send"),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  });
                                 },
                                 child: Container(
                                   height: 40,

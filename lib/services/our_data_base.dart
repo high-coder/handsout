@@ -426,4 +426,76 @@ class OurDatabase {
 
   }
 
+
+  Future<String> addDonation(PostModel post, int donatedAmount, String ourUserId) async{
+    print("inside this function here mate");
+    print("inside this function here mate");
+    print("inside this function here mate");
+    print(donatedAmount);
+    print("inside this function here mate");
+    print("inside this function here mate");
+    String retVal = "error";
+    double amount = donatedAmount.toDouble();
+
+    try{
+      print("insdie the tyr thing");
+      var snap = await _firestore.collection("users").doc(ourUserId).get();
+      List data = snap.data()!["donated"];
+      bool match= false;
+      Map ?dataSome;
+      double one = post.donatedTillNow;
+      double two = donatedAmount.toDouble();
+      double total = one + two;
+      if(data!=null && data.isNotEmpty) {
+        data.forEach((element) {
+          if(element["postUid"] == post.postDocUid) {
+            match = true;
+            dataSome = element;
+          }
+        });
+      }
+      if(match== false) {
+        await _firestore.collection("users").doc(ourUserId).update({
+          "donated":FieldValue.arrayUnion([
+            {
+              "postUid": post.postDocUid,
+              "amount": amount,
+            }
+          ])
+        });
+      } else {
+        await _firestore.collection("users").doc(ourUserId).update({
+          "donated":FieldValue.arrayRemove([
+            dataSome
+          ])
+        });
+        await _firestore.collection("users").doc(ourUserId).update({
+          "donated":FieldValue.arrayUnion([
+            {
+              "postUid": post.postDocUid,
+              "amount": dataSome!["amount"] + two,
+            }
+          ])
+        });
+      }
+
+
+
+      print(one);
+      print(two);
+      print("the total amount is$total");
+      print("Bwlo the above thisng ");
+      await _firestore.collection("posts").doc(post.postDocUid).update(
+        {
+          "donatedTillNow": total,
+        }
+      );
+      retVal = "success";
+    } catch(e) {
+
+      print(e);
+    }
+
+    return retVal;
+  }
 }

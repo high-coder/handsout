@@ -9,6 +9,8 @@ import 'package:hive/hive.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:image_picker/image_picker.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+
 
 import '../models/chatModel.dart';
 import '../models/chatsTileModel.dart';
@@ -93,6 +95,64 @@ class CurrentState extends ChangeNotifier {
 
 
   XFile ?image;
+
+
+
+
+  /// ------------------------------ Payment code will go here ---------------///
+  Razorpay _razorpay = Razorpay();
+
+  initCodePayment() async{
+
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
+  }
+
+  PostModel ?selectedRightNow;
+  BuildContext ?globalContext;
+  int amount2 = 0;
+  void openCheckout(int amount, BuildContext context) async {
+    String amount3 = "${amount}";
+    amount2 = amount;
+    var options = {
+      'key': 'rzp_test_g8S0jPdcLtA5LK',
+      'amount': "${amount3}00",
+      'name': "currentUser.name",
+      'description': 'Payment',
+      //'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
+      // 'external': {
+      //   'wallets': ['paytm']
+      // }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+
+    print("the payment was successful");
+    OurDatabase().addDonation(selectedRightNow!,amount2,currentUser.uid ?? "");
+    //Navigator.pop(globalContext!);
+    // Do something when payment succeeds
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    print("the payment was not successful");
+    // Do something when payment fails
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    // Do something when an external wallet was selected
+  }
+
+
+
 
   pickImageFromGallery() async{
     image = await imgPicker.pickImage(source: ImageSource.gallery);
