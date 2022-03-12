@@ -31,8 +31,8 @@ class _OurProfileState extends State<OurProfile> {
 
                 ),
                 onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => SubmittedHistory()));
+                  // Navigator.of(context).push(
+                  //     MaterialPageRoute(builder: (context) => SubmittedHistory()));
                 },
               ),
             ),

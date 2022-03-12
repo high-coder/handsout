@@ -114,6 +114,8 @@ class CurrentState extends ChangeNotifier {
   BuildContext ?globalContext;
   int amount2 = 0;
   void openCheckout(int amount, BuildContext context) async {
+    disableScreen = true;
+    notifyListeners();
     String amount3 = "${amount}";
     amount2 = amount;
     var options = {
@@ -134,20 +136,26 @@ class CurrentState extends ChangeNotifier {
     }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async{
 
     print("the payment was successful");
-    OurDatabase().addDonation(selectedRightNow!,amount2,currentUser.uid ?? "");
+    await OurDatabase().addDonation(selectedRightNow!,amount2,currentUser.uid ?? "");
     //Navigator.pop(globalContext!);
+    disableScreen = false;
+    notifyListeners();
     // Do something when payment succeeds
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
+    disableScreen = false;
+    notifyListeners();
     print("the payment was not successful");
     // Do something when payment fails
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
+    disableScreen = false;
+    notifyListeners();
     // Do something when an external wallet was selected
   }
 
@@ -444,7 +452,7 @@ class CurrentState extends ChangeNotifier {
         });
 
         // now adding this again
-        postIds.insert(index,PostModel.fromJson(element.doc.data() ?? {},element.doc.id,currentUser.uid ?? ""));
+        postIds.insert(index,PostModel.fromJson(element.doc.data() ?? {}));
       }
       /// one way to do things
       // event.docs.forEach((element) {
@@ -481,25 +489,18 @@ class CurrentState extends ChangeNotifier {
   }
 
   // this is used to fetch the old posts that the user once applied for in the past
-  List<PostModel> interestedPosts = [];
+
   List<PostModel> activePosts = [];
-  List<PostModel> archivePosts = [];
-  Future<String> fetchAppliedPosts(String additionalInfo) async{
-   if(additionalInfo == "active") {
-     activePosts =  await OurDatabase().fetchIds(currentUser.uid ?? "","users",additionalInfo);
-   } else if(additionalInfo == "archive"){
-     archivePosts =  await OurDatabase().fetchIds(currentUser.uid ?? "","users",additionalInfo);
-   } else {
-     interestedPosts =  await OurDatabase().fetchIds(currentUser.uid ?? "","users",additionalInfo);
 
-   }
+  Future<String> fetchAppliedPosts() async{
+     activePosts =  await OurDatabase().fetchIds(currentUser.uid ??"");
 
-   print(interestedPosts.length);
+
+     print("This is the active Posts $activePosts");
+
    String retVal = "error";
-   if(interestedPosts.isEmpty) {
-     retVal = "no data";
-   } else if(interestedPosts.isNotEmpty) {
-     retVal = "success";
+   if(activePosts.isNotEmpty){
+     retVal = "empty";
    }
    notifyListeners();
     return retVal;
@@ -551,29 +552,22 @@ class CurrentState extends ChangeNotifier {
 
   /// ---------------------------- ADmin Application Starts here ------------------------
   
-  List<PostModel> ?interestedPostsAdmin;
-  Future<String> fetchInterestedPosts() async{
-    String retVal = "error";
-    interestedPostsAdmin?.clear();
-    interestedPostsAdmin = await OurDatabase().fetchIds("thisisthat","notifications","none");
 
-    return retVal;
-  }
 
-  Stream getInterestedPeeps() async*{
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    List ids = [];
-
-    var ac = _firestore.collection("notifications").doc("thisisthat").snapshots();
-
-    ac.listen((event) async{
-      ids = event.data()!["posts"];
-      print(ids);
-      interestedPostsAdmin = await OurDatabase().fetchPosts(ids, "thisisthat");
-      notifyListeners();
-    });
-
-  }
+  // Stream getInterestedPeeps() async*{
+  //   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //   List ids = [];
+  //
+  //   var ac = _firestore.collection("notifications").doc("thisisthat").snapshots();
+  //
+  //   ac.listen((event) async{
+  //     ids = event.data()!["posts"];
+  //     print(ids);
+  //     interestedPostsAdmin = await OurDatabase().fetchPosts(ids, "thisisthat");
+  //     notifyListeners();
+  //   });
+  //
+  // }
 
 
   List<PostModel> approvedPosts= [];
@@ -588,9 +582,9 @@ class CurrentState extends ChangeNotifier {
       var snaps= FirebaseFirestore.instance.collection(approved).get();
       await snaps.then((value) => value.docs.forEach((element) {
         if(approved == "approvedPosts") {
-          approvedPosts.add(PostModel.fromJson(element.data(), element.id, currentUser.uid ?? "thisisthat"));
+          approvedPosts.add(PostModel.fromJson(element.data()));
         } else{
-          disapproved.add(PostModel.fromJson(element.data(), element.id, currentUser.uid ?? "thisisthat"));
+          disapproved.add(PostModel.fromJson(element.data()));
         }
       }));
 

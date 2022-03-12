@@ -43,10 +43,8 @@ class _OurHomeTeacherState extends State<OurHomeTeacher> {
     } else if(_navBarHelp.selectedIndex ==1) {
       return ProposalsMain();
     }
-    else if(_navBarHelp.selectedIndex  == 2){
-      return AllChatsFetch(collection: "users",);
-    }
-    else if(_navBarHelp.selectedIndex  == 3) {
+
+    else if(_navBarHelp.selectedIndex  == 2) {
       return OurProfile();
     }
     else {
@@ -73,7 +71,6 @@ class _OurHomeTeacherState extends State<OurHomeTeacher> {
           iconList: const [
             "assets/images/icons/homeIcon.png",
             "assets/images/icons/proposals.png",
-            "assets/images/icons/chatIcon.png",
             "assets/images/icons/profile.png",
           ],
           onChange: (val) {
@@ -83,8 +80,7 @@ class _OurHomeTeacherState extends State<OurHomeTeacher> {
           },
           textList: const [
             "Home",
-            "Proposals",
-            "Chats",
+            "Donated",
             "Profile",
           ],
         ),

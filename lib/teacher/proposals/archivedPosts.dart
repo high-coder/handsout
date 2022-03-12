@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handsout/teacher/postDetailsScreen/our_post_details.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 import '../../commonScreens/shimmerCode.dart';
@@ -23,7 +25,7 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
   @override
   void initState() {
     CurrentState _instance = Provider.of<CurrentState>(context, listen: false);
-    data = _instance.fetchAppliedPosts("archive");
+    data = _instance.fetchAppliedPosts();
 
     super.initState();
   }
@@ -31,7 +33,6 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
   @override
   Widget build(BuildContext context) {
     CurrentState _instance = Provider.of<CurrentState>(context, listen: false);
-
     return Scaffold(
       // appBar: AppBar(
       //   backgroundColor: MyColors.backgroundColor,
@@ -66,89 +67,143 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
                       return ShimmerForCategories(
                           _instance.size.height / 5.2, _instance.size.width - 20);
                     case ConnectionState.done:
-                      if (_instance.archivePosts.isNotEmpty) {
+                      if (_instance.activePosts.isNotEmpty) {
                         return ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: _instance.archivePosts.length,
+                            itemCount: _instance.activePosts.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
                                 onTap: () {
-                                  _instance.postInstance = _instance.archivePosts[index];
+                                  _instance.postInstance = _instance.postIds[index];
                                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostDetails()),);
                                 },
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                      bottom: 15, left: 10, right: 10, top: 15),
-                                  decoration: BoxDecoration(
-                                      border: Border.symmetric(
-                                          horizontal: BorderSide(
-                                              color: Colors.black.withOpacity(0.15),
-                                              width: 1))),
-                                  margin: EdgeInsets.only(
-                                    bottom: 20,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Spacer(flex: 1),
-                                      Expanded(
-                                        flex: 15,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            //title of the post
-                                            Flexible(
-                                                child: Text(
-                                                  _instance.archivePosts[index].title,
-                                                  style: GoogleFonts.openSans(
-                                                      fontSize: 17,
-                                                      color: MyColors.appThemeBlueText,
-                                                      fontWeight: FontWeight.w700),
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 2,
-                                                )),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
-                                            // Container(
-                                            //   width: 400,height: 2,
-                                            //   color: Colors.black,
-                                            // ),
-
-
-                                            Flexible(
-                                              child: Text("Deadline ${_instance.archivePosts[index].deadLine.day} /${_instance.archivePosts[index].deadLine.month} /${_instance.archivePosts[index].deadLine.year}",
-                                                style: GoogleFonts.openSans(fontStyle: FontStyle.italic),),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-
-                                            Flexible(
-                                              child: Text(
-                                                _instance.archivePosts[index].description,
-                                                maxLines: 7,
-                                              ),
-                                            ),
-                                            SizedBox(height: 10,),
-                                            Flexible(
-                                                child: Text(
-                                                  "Tags : ${_instance.archivePosts[index]
-                                                      .hashTags}",
-                                                  style: GoogleFonts.openSans(color: Colors.black,fontWeight: FontWeight.w500),
-                                                  maxLines: 1,
-                                                )),
-
-
-                                          ],
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      top: 25,
+                                      right: 15,
+                                      child: Container(
+                                        width: 100,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.yellowAccent,
+                                          borderRadius: BorderRadius.circular(20)
                                         ),
+                                        child: Center(child: Text("₹ ${_instance.activePosts[index].donatedAmountByUser.toString()} Donated")),
                                       ),
-                                      Spacer(flex: 1),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          bottom: 15, left: 10, right: 10, top: 15),
+                                      decoration: BoxDecoration(
+                                          border: Border.symmetric(
+                                              horizontal: BorderSide(
+                                                  color: Colors.black.withOpacity(0.15),
+                                                  width: 1))),
+                                      margin: EdgeInsets.only(
+                                        bottom: 20,
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            //crossAxisAlignment: CrossAxisAlignment.start,
+                                            //mainAxisAlignment: ,
+                                            children: [
+                                              CircleAvatar(radius: 30,),
+                                              SizedBox(width: 19,),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(_instance.currentUser.name ?? ""),
+                                                  Text(
+                                                    _instance.postIds[index].title,
+                                                    style: GoogleFonts.openSans(
+                                                        fontSize: 17,
+                                                        color: MyColors.appThemeBlueText,
+                                                        fontWeight: FontWeight.w700),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 2,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          //title of the post
 
-                                    ],
-                                  ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Container(
+                                            height: _instance.size.height/2,
+                                            width: _instance.size.width,
+                                            child: CachedNetworkImage(
+                                              imageUrl: _instance.postIds[index].downloadLink ?? "",fit: BoxFit.fitWidth,
+                                            ),
+                                          ),
+
+                                          Flexible(
+                                            child: Text("Ends on ${_instance.postIds[index].deadLine.day} /${_instance.postIds[index].deadLine.month} /${_instance.postIds[index].deadLine.year}",
+                                              style: GoogleFonts.openSans(fontStyle: FontStyle.italic),),
+                                          ),
+
+                                          Flexible(
+                                            child: Text("₹ ${_instance.postIds[index].donatedTillNow} Raised",
+                                              style: GoogleFonts.openSans(fontStyle: FontStyle.italic,color: Colors.red),),
+                                          ),
+
+                                          Builder(
+                                            builder: (context) {
+                                              double  valueToShow = 0;
+                                              valueToShow = _instance.postIds[index].donatedTillNow / _instance.postIds[index].totalDonationNeeded;
+                                              if(valueToShow >1) {
+                                                valueToShow = 1;
+                                              } else if(valueToShow <0) {
+                                                valueToShow = 0;
+                                              }
+
+
+                                              return LinearPercentIndicator(
+                                                width: MediaQuery.of(context).size.width - 50,
+                                                animation: true,
+                                                lineHeight: 20.0,
+                                                animationDuration: 2000,
+                                                percent: valueToShow,
+                                                //center: Text("90.0%"),
+                                                linearStrokeCap: LinearStrokeCap.roundAll,
+                                                progressColor: Colors.greenAccent,
+                                              );
+                                            },
+                                          ),
+
+
+                                          Flexible(
+                                            child: Text("Goal ₹ ${_instance.postIds[index].totalDonationNeeded}",
+                                              style: GoogleFonts.openSans(fontStyle: FontStyle.italic),),
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              _instance.postIds[index].description,
+                                              maxLines: 2,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10,),
+
+                                          Flexible(
+                                              child: Text(
+                                                "Tags : ${_instance.postIds[index].hashTags}",
+                                                style: GoogleFonts.openSans(color: Colors.black,fontWeight: FontWeight.w500),
+                                                maxLines: 1,
+                                              )),
+
+
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               );
                             });

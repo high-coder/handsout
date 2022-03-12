@@ -18,9 +18,10 @@ class PostModel {
   double totalDonationNeeded;
   double donatedTillNow;
   String posterUid;
-
+  String ?donatedAmountByUser;
   PostModel({
     required this.totalDonationNeeded,
+    this.donatedAmountByUser,
     required this.description,
     this.file,
     required this.title,
@@ -50,12 +51,12 @@ class PostModel {
       "postTime": postTime,
       "donatedTillNow": donatedTillNow,
       "totalDonationNeeded" : totalDonationNeeded,
+
     };
   }
 
   factory PostModel.fromJson(
-      Map<String, dynamic> data, String uid, String mainUid,
-      [String? type]) {
+      Map<String, dynamic> data,[String ?donatedByUser]) {
 
 
     return PostModel(
@@ -64,7 +65,7 @@ class PostModel {
       title: data["title"],
       location: data["fileLocation"],
       downloadLink: data["downloadLink"],
-
+        donatedAmountByUser : donatedByUser,
 
       postTime: data["timestamp"] != null
           ? data["timestamp"].toDate()

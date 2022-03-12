@@ -15,50 +15,21 @@ class ProposalsMain extends StatefulWidget {
 class _ProposalsMainState extends State<ProposalsMain> {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: MyColors.appThemeBlue,
-            elevation: 0,
-            // leading: IconButton(
-            //     icon: Icon(
-            //       Icons.arrow_back,
-            //       color: MyColors.yellowish,
-            //     ),
-            //     onPressed: () => Navigator.pop(context)),
-            bottom: const TabBar(
-              tabs: [
-                Tab(
-                  child: Text("Active"),
-                ),
-                Tab(
-                  child: Text("Submitted"),
-                ),
-                Tab(
-                  child: Text("Archived"),
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: MyColors.appThemeBlue,
+        elevation: 0,
+        // leading: IconButton(
+        //     icon: Icon(
+        //       Icons.arrow_back,
+        //       color: MyColors.yellowish,
+        //     ),
+        //     onPressed: () => Navigator.pop(context)),
 
 
-                //
-                // Tab(
-                //   child: Text("Disapproved posts"),
-                // ),
+      ),
 
-
-              ],
-            ),
-
-          ),
-
-          body: TabBarView(
-            children: [
-              ActivePosts(),
-              SubmittedHistory(),
-              ArchivedPosts(),
-            ],
-          ),
-        )
+      body: ArchivedPosts(),
     );
   }
 }

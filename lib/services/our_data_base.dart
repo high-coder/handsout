@@ -130,28 +130,18 @@ class OurDatabase {
   }
 
   /// ------------------------------ the below two functions will fetch the posts that the user is interested in !!!!!!! -------------------
-  Future<List<PostModel>> fetchIds(String uid, String collection,String additionalInfo) async {
-    var snapShot = await _firestore.collection(collection).doc(uid).get();
+  Future<List<PostModel>> fetchIds(String uid) async {
+    var snapShot = await _firestore.collection("users").doc(uid).get();
     Map data = snapShot.data() ?? {};
     List ids = [];
-    if (collection == "users") {
-      if(additionalInfo == "active" || additionalInfo == "archive") {
-        ids = data[additionalInfo];
-      } else {
-        ids = data["interested"];
-      }
-    } else {
-      ids = data["posts"];
-    }
+    print(data);
+    ids = data["donated"];
 
     print(ids);
     print("something is fishy here i guess");
     List<PostModel> posts = [];
-    if(collection == "users") {
-      posts = await fetchPosts(ids, uid);
-    } else {
-      posts = await fetchPosts(ids, uid);
-    }
+    posts = await fetchPosts(ids, uid);
+
     return posts;
   }
 
@@ -163,16 +153,10 @@ class OurDatabase {
         print("insider here ");
         print(element);
         try{
-          var data = await _firestore.collection("posts").doc(element).get();
-          if(data.exists == true) {
-            posts.add(PostModel.fromJson(data.data() ?? {}, element, mainUid));
-          } else {
-            var data = await _firestore.collection("approvedPosts").doc(element).get();
-            print(data.data());
-           // PostModel instance = PostModel.fromJson(data.data() ?? {}, element, mainUid,);
+          var data = await _firestore.collection("posts").doc(element["postUid"]).get();
 
-            posts.add(PostModel.fromJson(data.data() ?? {}, element, mainUid,"ap"));
-          }
+          posts.add(PostModel.fromJson(data.data() ?? {},element["amount"].toString()));
+
           print(data.data());
 
         }catch(e) {
@@ -428,12 +412,6 @@ class OurDatabase {
 
 
   Future<String> addDonation(PostModel post, int donatedAmount, String ourUserId) async{
-    print("inside this function here mate");
-    print("inside this function here mate");
-    print("inside this function here mate");
-    print(donatedAmount);
-    print("inside this function here mate");
-    print("inside this function here mate");
     String retVal = "error";
     double amount = donatedAmount.toDouble();
 
