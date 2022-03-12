@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "734584782756",
+    "project_id": "handsout-fbf21",
+    "storage_bucket": "handsout-fbf21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:734584782756:android:191bcb4fb417d2088c0b31",
+        "android_client_info": {
+          "package_name": "com.hands.org.handsout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "734584782756-51kdcr1s1ku9gq0poenm0jvaesgbc0if.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hands.org.handsout",
+            "certificate_hash": "7a3e26efb242dd020968fe995bc8fb4c139aa1fc"
+          }
+        },
+        {
+          "client_id": "734584782756-t5lal8c08pn9dc7lv20kh2fpgrlqblv1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCekSVQdCCNBNRc54UTetpTY3t1ok5bl4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "734584782756-t5lal8c08pn9dc7lv20kh2fpgrlqblv1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
