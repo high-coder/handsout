@@ -146,7 +146,7 @@ class _OurChooseScreenState extends State<OurChooseScreen> {
                       String ret = await _instance.updateUserData(customerType: true,);
 
                       if(ret == "success") {
-                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomePageUser()), (route) => false);
+                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurSplashScreen()), (route) => false);
                       }
                     }
                     else if (selected2 == true) {

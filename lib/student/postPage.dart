@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:handsout/commonScreens/localWidgets/screenDisableCode.dart';
 import 'package:provider/provider.dart';
 import '../models/postModel.dart';
@@ -145,21 +147,18 @@ class _AddPostState extends State<AddPost> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: MyColors.appThemeBlue,
         elevation: 0.9,
         centerTitle: true,
         title: Text(
           "Add your Cause",
-          style: Theme.of(context).textTheme.headline6!.copyWith(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
+          style: GoogleFonts.openSans(color: Colors.white,fontSize: 17),
         ),
-        leading: IconButton(
-          color: Theme.of(context).iconTheme.color,
-          icon: const Icon(Icons.menu),
-          onPressed: () => widget.drawerKey!.currentState!.openDrawer(),
-        ),
+        // leading: IconButton(
+        //   color: Theme.of(context).iconTheme.color,
+        //   icon: const Icon(Icons.menu),
+        //   onPressed: () => widget.drawerKey!.currentState!.openDrawer(),
+        // ),
         actions: [
           IconButton(
             onPressed: ()  {
@@ -171,6 +170,7 @@ class _AddPostState extends State<AddPost> {
         ],
       ),
       body: Scaffold(
+        backgroundColor: Colors.black,
         body: ScreenLoader(
           child: SingleChildScrollView(
             child: Form(
@@ -185,6 +185,7 @@ class _AddPostState extends State<AddPost> {
                         Expanded(
                           flex: 8,
                           child: TextFormField(
+                          style: GoogleFonts.openSans(color: Colors.white,fontSize: 15),
                             validator: (value) {
                               print("sdfbdsf");
                               if (value?.isNotEmpty ?? false) {
@@ -196,6 +197,7 @@ class _AddPostState extends State<AddPost> {
                             controller: _titleController,
                             decoration: const InputDecoration(
                               labelText: "FundRaiser Title",
+                              labelStyle: TextStyle(color: Colors.white,fontSize: 18),
                               disabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
                               errorBorder: InputBorder.none,
@@ -217,7 +219,7 @@ class _AddPostState extends State<AddPost> {
                           onPressed: () {
                             _instance.pickImageFromGallery();
                           },
-                          icon: const Icon(Icons.photo),
+                          icon: const Icon(Icons.photo,color: Colors.white),
                         ),
                       ),
                       Expanded(
@@ -227,15 +229,18 @@ class _AddPostState extends State<AddPost> {
                           onPressed: () {
                             _instance.pickImageFromCamera();
                           },
-                          icon: const Icon(Icons.camera_alt),
+                          icon: const Icon(Icons.camera_alt,color: Colors.white,),
                         ),
                       ),
                       Expanded(
                         flex: 10,
                         child: TextFormField(
+                          style: GoogleFonts.openSans(color: Colors.white,fontSize: 15),
+
                           controller: _hashtags,
                           decoration: InputDecoration(
                             labelText: "HashTags",
+                            labelStyle: TextStyle(color: Colors.white,fontSize: 17),
                             disabledBorder: InputBorder.none,
                             focusedBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
@@ -252,6 +257,7 @@ class _AddPostState extends State<AddPost> {
                       //controller: model.controller,
                       maxLines: null,
                       decoration: InputDecoration(
+
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
@@ -286,7 +292,7 @@ class _AddPostState extends State<AddPost> {
                                 },
                                 icon: const Icon(
                                   Icons.cancel,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
                             )
@@ -313,11 +319,30 @@ class _AddPostState extends State<AddPost> {
                                 style: MyTextStyle.referEarnText,
                               ),
                               TextFormField(
+                                  style: GoogleFonts.openSans(color: Colors.white,),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
                                 //focusNode: _nameFocus,
                                   controller: _priceController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
 
+                                  decoration: const InputDecoration(
+                                    disabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
+                                    enabledBorder:  OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
+                                    errorBorder:  OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
                                   ),
                                   validator: (value) {
                                     print(value);
@@ -353,8 +378,24 @@ class _AddPostState extends State<AddPost> {
                                   //enabled: false,
                                 //focusNode: _nameFocus,
                                   controller: _dateController,
+                                  style: GoogleFonts.openSans(color: Colors.white,),
                                   decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
+
+                                    disabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
+                                    enabledBorder:  OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
+                                    errorBorder:  OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white,width: 2)
+                                    ),
 
                                   ),
                                   validator: (value) {

@@ -34,9 +34,6 @@ class _HomeModuleState extends State<HomeModule> {
   }
 
   Widget alert(BuildContext context) {
-    print(
-      'dfjdsf'
-    );
     return SimpleDialog(
       title:const Text('Enter the Amount'),
       children: <Widget>[
@@ -64,8 +61,9 @@ class _HomeModuleState extends State<HomeModule> {
     return SafeArea(
       child: Scaffold(
 
+        backgroundColor: Colors.black,
         appBar: AppBar(
-          backgroundColor: MyColors.backgroundColor,
+          backgroundColor:Colors.black,
           elevation: 0,
           // leading: IconButton(
           //     icon: Icon(
@@ -74,8 +72,7 @@ class _HomeModuleState extends State<HomeModule> {
           //     ),
           //     onPressed: () => Navigator.pop(context)),
           title: Text(
-            'Feed',
-            style: MyTextStyle.text3,
+            'Feed', style: GoogleFonts.openSans(color: Colors.white,fontSize: 15)
           ),
         ),
         body: ScreenLoader(
@@ -96,7 +93,7 @@ class _HomeModuleState extends State<HomeModule> {
                         return GestureDetector(
                           onTap: () {
                             _instance.postInstance = _instance.postIds[index];
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostDetails()),);
+                            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostDetails()),);
                           },
                           child: Container(
                             padding: EdgeInsets.only(
@@ -123,15 +120,18 @@ class _HomeModuleState extends State<HomeModule> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(_instance.currentUser.name ?? ""),
-                                        Text(
-                                          _instance.postIds[index].title,
-                                          style: GoogleFonts.openSans(
-                                              fontSize: 17,
-                                              color: MyColors.appThemeBlueText,
-                                              fontWeight: FontWeight.w700),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
+                                        Text(_instance.currentUser.name ?? "",style: GoogleFonts.openSans(color: Colors.white,fontSize: 15),),
+                                        Container(
+                                          width: 260,
+                                          child: Text(
+                                            _instance.postIds[index].title,
+                                            style: GoogleFonts.openSans(
+                                                fontSize: 17,
+                                                color: MyColors.appThemeBlueText,
+                                                fontWeight: FontWeight.w700),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -152,7 +152,7 @@ class _HomeModuleState extends State<HomeModule> {
 
                                 Flexible(
                                   child: Text("Ends on ${_instance.postIds[index].deadLine.day} /${_instance.postIds[index].deadLine.month} /${_instance.postIds[index].deadLine.year}",
-                                    style: GoogleFonts.openSans(fontStyle: FontStyle.italic),),
+                                    style: GoogleFonts.openSans(fontStyle: FontStyle.italic,color: Colors.white),),
                                 ),
 
                                 Flexible(
@@ -187,7 +187,7 @@ class _HomeModuleState extends State<HomeModule> {
 
                                 Flexible(
                                   child: Text("Goal ₹ ${_instance.postIds[index].totalDonationNeeded}",
-                                    style: GoogleFonts.openSans(fontStyle: FontStyle.italic),),
+                                    style: GoogleFonts.openSans(fontStyle: FontStyle.italic,color: Colors.white),),
                                 ),
                                 Flexible(
                                   child: Text(
@@ -233,13 +233,13 @@ class _HomeModuleState extends State<HomeModule> {
                                       color: Colors.red,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: Center(child: Text("Donate")),
+                                    child: Center(child: Text("Donate",style: GoogleFonts.openSans(color: Colors.white,fontSize: 15))),
                                   ),
                                 ),
                                 Flexible(
                                     child: Text(
                                       "Tags : ${_instance.postIds[index].hashTags}",
-                                      style: GoogleFonts.openSans(color: Colors.black,fontWeight: FontWeight.w500),
+                                      style: GoogleFonts.openSans(color: Colors.white,fontWeight: FontWeight.w500),
                                       maxLines: 1,
                                     )),
 

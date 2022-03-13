@@ -34,6 +34,7 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
   Widget build(BuildContext context) {
     CurrentState _instance = Provider.of<CurrentState>(context, listen: false);
     return Scaffold(
+      backgroundColor: Colors.black,
       // appBar: AppBar(
       //   backgroundColor: MyColors.backgroundColor,
       //   elevation: 0,
@@ -76,7 +77,7 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
                               return GestureDetector(
                                 onTap: () {
                                   _instance.postInstance = _instance.postIds[index];
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostDetails()),);
+                                //  Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostDetails()),);
                                 },
                                 child: Stack(
                                   children: [
@@ -84,13 +85,13 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
                                       top: 25,
                                       right: 15,
                                       child: Container(
-                                        width: 100,
+                                        width: 130,
                                         height: 40,
                                         decoration: BoxDecoration(
-                                          color: Colors.yellowAccent,
-                                          borderRadius: BorderRadius.circular(20)
+                                            color: Colors.grey,
+                                            borderRadius: BorderRadius.circular(20)
                                         ),
-                                        child: Center(child: Text("₹ ${_instance.activePosts[index].donatedAmountByUser.toString()} Donated")),
+                                        child: Center(child: Text("₹ ${_instance.activePosts[index].donatedAmountByUser.toString()} Donated",style: GoogleFonts.openSans(color: Colors.white,fontSize: 15))),
                                       ),
                                     ),
                                     Container(
@@ -118,7 +119,7 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(_instance.currentUser.name ?? ""),
+                                                  Text(_instance.currentUser.name ?? "",style: GoogleFonts.openSans(color: Colors.white,fontSize: 15),),
                                                   Text(
                                                     _instance.postIds[index].title,
                                                     style: GoogleFonts.openSans(
@@ -147,7 +148,7 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
 
                                           Flexible(
                                             child: Text("Ends on ${_instance.postIds[index].deadLine.day} /${_instance.postIds[index].deadLine.month} /${_instance.postIds[index].deadLine.year}",
-                                              style: GoogleFonts.openSans(fontStyle: FontStyle.italic),),
+                                              style: GoogleFonts.openSans(fontStyle: FontStyle.italic,color: Colors.white),),
                                           ),
 
                                           Flexible(
@@ -182,7 +183,7 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
 
                                           Flexible(
                                             child: Text("Goal ₹ ${_instance.postIds[index].totalDonationNeeded}",
-                                              style: GoogleFonts.openSans(fontStyle: FontStyle.italic),),
+                                              style: GoogleFonts.openSans(fontStyle: FontStyle.italic,color: Colors.white),),
                                           ),
                                           Flexible(
                                             child: Text(
@@ -195,7 +196,7 @@ class _ArchivedPostsState extends State<ArchivedPosts> {
                                           Flexible(
                                               child: Text(
                                                 "Tags : ${_instance.postIds[index].hashTags}",
-                                                style: GoogleFonts.openSans(color: Colors.black,fontWeight: FontWeight.w500),
+                                                style: GoogleFonts.openSans(color: Colors.white,fontWeight: FontWeight.w500),
                                                 maxLines: 1,
                                               )),
 

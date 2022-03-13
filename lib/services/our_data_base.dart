@@ -418,13 +418,19 @@ class OurDatabase {
     try{
       print("insdie the tyr thing");
       var snap = await _firestore.collection("users").doc(ourUserId).get();
-      List data = snap.data()!["donated"];
+      late List data;
+      if(snap.data()!["donated"]!=null) {
+
+         data = snap.data()!["donated"];
+      }  else{
+        data = [];
+      }
       bool match= false;
       Map ?dataSome;
       double one = post.donatedTillNow;
       double two = donatedAmount.toDouble();
       double total = one + two;
-      if(data!=null && data.isNotEmpty) {
+      if(data!=null) {
         data.forEach((element) {
           if(element["postUid"] == post.postDocUid) {
             match = true;

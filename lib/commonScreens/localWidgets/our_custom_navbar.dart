@@ -64,7 +64,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             ),
           ),
         ],
-        color: Colors.white //: Color(0xFF3F3F3F),
+        color: Colors.black //: Color(0xFF3F3F3F),
       ),
 
       padding: const EdgeInsets.only(left: 15 , right: 15 , bottom: 10 , top: 10),

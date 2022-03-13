@@ -33,7 +33,8 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Howdy Works',
+          title: ''
+              'Hands Out',
           theme: ThemeData(
             // This is the theme of your application.
             //

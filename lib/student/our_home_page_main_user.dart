@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../commonScreens/localWidgets/our_custom_navbar.dart';
 import '../provider/bottom_navbar.dart';
 import '../provider/currentState.dart';
+import '../teacher/profileScreen/our_profile_screen.dart';
 import 'homeScreen/our_home_page.dart';
 
 
@@ -40,12 +41,12 @@ class _OurHomePageMainUserState extends State<OurHomePageMainUser> {
     if(_navBarHelp.selectedIndex == 0){
       return OurHomePageUser();
     }
-    else if(_navBarHelp.selectedIndex  == 1){
-      //return AllChatsFetch(collection: "users",);
-      return Container();
-    }
-    else if(_navBarHelp.selectedIndex  == 2) {
-      //return OurProfile();
+    // else if(_navBarHelp.selectedIndex  == 1){
+    //   //return AllChatsFetch(collection: "users",);
+    //   return Container();
+    // }
+    else if(_navBarHelp.selectedIndex  == 1) {
+      return OurProfile();
     }
     else {
       return Container();
@@ -82,7 +83,7 @@ class _OurHomePageMainUserState extends State<OurHomePageMainUser> {
         bottomNavigationBar: CustomBottomNavigationBar(
           iconList: const [
             "assets/images/icons/homeIcon.png",
-            "assets/images/icons/chatIcon.png",
+         //   "assets/images/icons/chatIcon.png",
             "assets/images/icons/profile.png",
           ],
           onChange: (val) {
@@ -92,7 +93,7 @@ class _OurHomePageMainUserState extends State<OurHomePageMainUser> {
           },
           textList: const [
             "Home",
-            "Chats",
+           // "Chats",
             "Profile",
           ],
         ),

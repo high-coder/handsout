@@ -18,43 +18,46 @@ class _OurProfileState extends State<OurProfile> {
   @override
   Widget build(BuildContext context) {
     CurrentState _instance = Provider.of<CurrentState>(context,listen:false);
-    return SafeArea(
-      child: Container(
-        child: Column(
-          children: [
-            Card(
-              elevation: 3,
-              child: ListTile(
-                title: Text(
-                  "View Previously applied",
-                  style:MyTextStyle.listTileFont,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Container(
+          child: Column(
+            children: [
+              // Card(
+              //   elevation: 3,
+              //   child: ListTile(
+              //     title: Text(
+              //       "View Previously applied",
+              //       style:MyTextStyle.listTileFont,
+              //
+              //     ),
+              //     onTap: () {
+              //       // Navigator.of(context).push(
+              //       //     MaterialPageRoute(builder: (context) => SubmittedHistory()));
+              //     },
+              //   ),
+              // ),
 
+              Card(
+                elevation: 3,
+                child: ListTile(
+                  title: Text(
+                    "Logout",
+                    style:MyTextStyle.listTileFont,
+
+                  ),
+                  onTap: () async{
+
+                    await _instance.signOut();
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurLoginPage()), (route) => false);
+
+                  },
                 ),
-                onTap: () {
-                  // Navigator.of(context).push(
-                  //     MaterialPageRoute(builder: (context) => SubmittedHistory()));
-                },
               ),
-            ),
 
-            Card(
-              elevation: 3,
-              child: ListTile(
-                title: Text(
-                  "Logout",
-                  style:MyTextStyle.listTileFont,
-
-                ),
-                onTap: () async{
-
-                  await _instance.signOut();
-                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurLoginPage()), (route) => false);
-
-                },
-              ),
-            ),
-
-          ],
+            ],
+          ),
         ),
       ),
     );

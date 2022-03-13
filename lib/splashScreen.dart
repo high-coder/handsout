@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:handsout/provider/currentState.dart';
 import 'package:handsout/student/our_home_page_main_user.dart';
 import 'package:handsout/student/postPage.dart';
@@ -27,6 +28,9 @@ class _OurSplashScreenState extends State<OurSplashScreen> {
 
   initialCalls() async {
     CurrentState _instance = Provider.of<CurrentState>(context,listen:false);
+      await Future.delayed(Duration(seconds: 2)).then((value) {
+
+    });
     String where = await _instance.onStartUp();
 
     print(where);
@@ -47,7 +51,7 @@ class _OurSplashScreenState extends State<OurSplashScreen> {
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomeTeacher()), (route) => false);
     } else if(where == "teacher") {
       //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomePageMainUser()), (route) => false);
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomeTeacher()), (route) => false);
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomePageMainUser()), (route) => false);
     } else if(where == "admin") {
      // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => OurHomeAdmin()), (route) => false);
     }
@@ -59,6 +63,18 @@ class _OurSplashScreenState extends State<OurSplashScreen> {
   Widget build(BuildContext context) {
     CurrentState _instance = Provider.of<CurrentState>(context,listen:false);
     _instance.size = MediaQuery.of(context).size;
-    return Container();
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: _instance.size.width,
+            height: _instance.size.height/2,
+            child: Image.asset("assets/images/registration/mainLogo.png",fit: BoxFit.contain,),
+          ),
+          Center(child: Text("HANDS OUT",style: GoogleFonts.aladin(color: Colors.black,fontSize: 29),),)
+        ],
+      ),
+    );
   }
 }
